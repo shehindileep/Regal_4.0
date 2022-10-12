@@ -1,0 +1,212 @@
+**Regal IWF Helper APIs**
+===========================
+Regal 4.0 Test Automation Framework provides python module with helper APIs for Inter Working Function (IWF). This custom python module is named as Inter Working Function  module.
+The Regal Inter Working Function module enables the client by providing the support functionality for Inter Working Function (IWF) Node.  Below are the definitions of the class and the APIs that be used from this python module.
+
+IWF Base Helper
+----------------------------------------
+Helper library to support iwf node
+
+File path : regal_lib/product/Diametriq/helper/iwf_base_helper.py
+
+Use the below line to import the IWFHelper
+from Diametriq.helper.iwf_base_helper import IWFHelper
+
+Object creation : iwf_obj = IWFHelper(node_name, app_name)
+
+.. automodule:: iwf_base_helper
+.. autoclass:: IWFHelper
+
+   .. automethod:: generate_and_upload_iwf_config
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+      :language: python
+      :lines: 3
+
+   .. automethod:: start_iwf
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+       :language: python
+       :lines: 6
+
+   .. automethod:: start_stats
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+       :language: python
+       :lines: 9
+
+   .. automethod:: stop_iwf
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+       :language: python
+       :lines: 12
+
+   .. automethod:: stop_stats
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+       :language: python
+       :lines: 15       
+
+
+IWF Dia Perf Helper
+----------------------------------------
+Helper library to support iwf diameter tool
+
+File path : regal_lib/product/Diametriq/helper/iwf_diameter_perf_helper.py
+
+Use the below line to import the IWFDiaPerfHelper
+from Diametriq.helper.iwf_diameter_perf_helper import IWFDiaPerfHelper
+
+Object creation : iwf_diaperf_obj = IWFDiaPerfHelper (node_name, app_name)
+
+.. automodule:: iwf_diameter_perf_helper
+.. autoclass:: IWFDiaPerfHelper
+
+   .. automethod:: setup_dia_tool
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+      :language: python
+      :lines: 19
+
+   .. automethod:: start_dia_tool
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+      :language: python
+      :lines: 22
+
+   .. automethod:: stop_dia_tool
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+      :language: python
+      :lines: 25
+
+IWF SS7 Perf Helper
+----------------------------------------
+Helper library to support iwf ss7 tool
+
+File path : regal_lib/product/Diametriq/helper/iwf_ss7_perf_helper.py
+
+Use the below line to import the IWFSS7PerfHelper
+from Diametriq.helper.iwf_ss7_perf_helper import IWFSS7PerfHelper
+
+Object creation : iwf_ss7perf_obj = IWFSS7PerfHelper(node_name, app_name)
+
+.. automodule:: iwf_ss7_perf_helper
+.. autoclass:: IWFSS7PerfHelper
+
+   .. automethod:: setup_ss7_tool
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+      :language: python
+      :lines: 29
+
+   .. automethod:: start_ss7_tool
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+      :language: python
+      :lines: 32
+
+   .. automethod:: stop_ss7_tool
+
+   Snippet:
+
+   .. literalinclude:: mySnippet.py
+      :language: python
+      :lines: 35      
+
+Sample Usage
+-----------------
+
+.. code-block:: python
+
+  import time
+  from Diametriq.helper.iwf_diameter_perf_helper import IWFDiaPerfHelper
+  from Diametriq.helper.iwf_ss7_perf_helper import IWFSS7PerfHelper
+  from Diametriq.helper.iwf_base_helper import IWFHelper
+
+  class RouteToIWF(object):
+        """
+        To control  start/monitor/stop the IWF/SS7/DIA Tools
+        """
+        def __init__(self):
+            self._iwf_diaperf_obj = IWFDiaPerfHelper("ocs", "iwf-dia")
+            self._iwf_ss7perf_obj = IWFSS7PerfHelper("msc", "iwf-ss7")
+            self._iwf_obj = IWFHelper("iwf", "iwf")
+
+        def _setup(self):
+            """
+            Method to Setup Configuration in IWF/SS7/Dia perf  Nodes
+            For IWF Node - Will generate IWF configuration and upload to mysql db in the IWF node
+            For SS7/Dia Perf  Nodes: SS7/Dia Related Configuration files will be generated and copied to respective nodes
+            """
+            self._iwf_obj.generate_and_upload_iwf_config()
+            self._iwf_obj.setup_stats()
+            self._iwf_diaperf_obj.setup_dia_tool()
+            self._iwf_ss7perf_obj.setup_ss7_tool()
+
+        def _start_testcase(self):
+            """
+            Method to start the IWF/SS7/Dia Perf tool Nodes
+            Traffic will be started from SS7 node when the application comes up
+            """
+            self._iwf_obj.start_iwf()
+            self._iwf_diaperf_obj.start_dia_tool()
+            self._iwf_ss7perf_obj.start_ss7_tool()
+            self._iwf_obj.start_stats()
+            time.sleep(10)
+
+        def _stop_testcase(self):
+            """
+            Method to stop the IWF/SS7/Dia Perf tool Nodes
+            """
+            self._iwf_obj.stop_iwf()
+            self._iwf_diaperf_obj.stop_dia_tool()
+            self._iwf_ss7perf_obj.stop_ss7_tool()
+            self._iwf_obj.stop_stats()
+
+        def _exit(self):
+            """
+            Stop all the services, tools and delete object created
+            """
+            self._iwf_obj = None
+            self._iwf_diaperf_obj = None
+            self._iwf_ss7perf_obj = None
+
+        def test_run(self):
+            """
+            Method which will start the test case execution
+            """
+            try:
+                self._setup()
+                self._start_testcase()
+                time.sleep(self._test_run_duration)
+                self._stop_testcase()
+                self._exit()
+
+  def execute():
+        """
+        Execution of Test Case starts here
+        """
+        test = RouteToIWF()
+        test.test_run()
+

@@ -1,0 +1,13 @@
+{
+	"solutionStackName" : "OCS",
+	"solutionStackVersion" : "1.0.0",
+	"os" : {
+		"CentOS" : "7.6"
+	},
+	"application" : {
+		"CTF": "RO-R14_7.7.0"
+	},
+	"platform" : {
+		"default_platform" : "1.0.0"
+	}
+}

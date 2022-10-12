@@ -1,0 +1,208 @@
+<?xml version="1.0"?>
+
+<ITS-Diameter  version                 = "1"
+               productName             = "IntelliNet IDS"
+               enableDefaultRouting    = "0"
+               peerNotificationsToApp  = "1"
+               addOriginStateIdOpt     = "0"
+               enablePeerIpCheck       = "0"
+               enableHMI               = "1"
+	       initiateConnsOpt        = "{{ initiate_conn }}"
+               enableStatistics        = "1"
+               enablePeerDiscovery     = "1"
+               peerDiscoveryInterval   = "60"
+               forceStateLessBehavior  = "0"
+               enableHexDump           = "0" >
+
+
+   <LocalConfig>
+	<QueueMgmt enable = "yes"
+           msgRouterThreadCount = "{{ msgrouterthread }}">
+        </QueueMgmt>
+
+       <InbandSecurityId  value = "0"/>
+       <TlsEnable         value = "no"/>
+       <VendorId          value = "0"/>
+       <SupportedVendorId value = "10415"/>
+       <SupportedVendorId value = "5535"/>
+       <SupportedVendorId value = "13019"/>
+
+       <AuthAppId         value = "0"/>
+       <AuthAppId         value = "16777216"/>
+       <AuthAppId         value = "16777251"/>
+       <AuthAppId         value = "16777217"/>
+       <AuthAppId         value = "16777222"/>
+       <AuthAppId         value = "16777224"/>
+       <AuthAppId         value = "16777229"/>
+       <AuthAppId         value = "16777219"/>
+       <AuthAppId         value = "16777238"/>
+       <AuthAppId         value = "55557"/>
+       <AuthAppId         value = "55559"/>
+       <AuthAppId         value = "16777231"/>
+       <AuthAppId         value = "16777302"/>
+       <AuthAppId         value = "16777303"/>
+       <AuthAppId         value = "1"/>
+       <AuthAppId         value = "2"/>
+       <AuthAppId         value = "5"/>
+       <AuthAppId         value = "4"/>
+       <AuthAppId         value = "{{ auth_application_id }}"/>
+
+       <!-- AuthAppId "0xffffffff" is required only for Relay Agent Support-->
+       <!-- <AuthAppId         value = "0xffffffff"/> -->
+
+       <!-- Vendor-Specific-Application-Id -->
+        <!-- Exactly one of Auth or Accounting should be present -->
+       <VendorSpecificAppId>
+
+           <VendorId          value = "10415"/>
+           <AuthAppId         value = "0"/>
+
+       </VendorSpecificAppId>
+
+        <VendorSpecificAppId>
+
+           <VendorId          value = "10415"/>
+           <AccountingAppId   value = "3"/>
+
+       </VendorSpecificAppId>
+
+
+       <!-- Single HostInfo Only 1 Origin-Host/Origin-Realm in CER -->
+       <!-- mateHostName is required only incase of redundancy -->
+       <LocalHost  serverHostName = "{{ local_host }}"
+	       realmName      = "{{ local_realm }}" >
+
+           <!-- Multiple Transports (Max 4) -->
+	   <Transport   type         = "{{ transport_type }}"
+		   serverIpAddr = "{{ local_ip }}"
+		   port         = "{{ local_port }}">
+
+               <ConfigData
+                    cookieLife      = "60000"
+                    hbOn            = "yes"
+                    hbTimeout       = "10000"
+                    initTimeout     = "3000"
+                    maxAttempts     = "16"
+                    maxInStreams    = "12"
+                    numOutStreams   = "12"
+                    recvTimeout     = "0,0"
+                    sendTimeout     = "0,0"
+                    shutdownTimeout = "300"
+                    sackDelay       = "5"
+                    asocMaxAttempt  = "16"
+                    rtoMax          = "60000"
+                    rtoMin          = "2000"
+                    rtoInitial      = "3000"
+                    sendBufSize     = "102400"
+                    recvBufSize     = "102400"
+                    pathmaxrxt      = "16" >
+                </ConfigData>
+
+           </Transport>
+
+
+       </LocalHost>
+
+       <SessionConfig>
+
+              <AuthSession  
+                        timeout        = "40"
+                        lifetime       = "30"
+                        gracePeriod    = "10" >
+             
+              </AuthSession>
+
+              <AcctSession  
+                        timeout         = "30"
+                        interimInterval = "30">
+              </AcctSession> 
+               
+       </SessionConfig>
+
+    <TraceSubsystem>
+        <Critical  output = ""/>
+        <Error     output = ""/>
+        <Warning   output = ""/>
+        <Debug     output = ""/>
+    </TraceSubsystem>
+
+    <!--Tls-Security
+        TlsType                     = "OPENSSL"
+        TlsTraceLevel               = "4"
+        TlsIdentityVerification     = "yes"
+        TlsCertificateType          = "X.509"
+        TlsClientCertificateFile    = "server.cert.pem"
+        TlsClientKeyFile            = "server.key.pem"
+        TlsServerCertificateFile    = "server.cert.pem"
+        TlsServerKeyFile            = "server.key.pem"
+        TlsCAPath                   = "/opt/IntelliNet/ca/">
+        <TlsOwnCertPath path        = "/opt/IntelliNet/own/"/>
+        <TlsCRLPath path            = "/opt/IntelliNet/crl/"/>
+        <CrlVerification enable     = "no"/>
+        <TrustedCAs>
+            <CA TrustFile = "cacert.pem" CertType ="PEM" CRLFile = ""/>
+        </TrustedCAs>
+        <TlsCipherSuites>
+            <CipherSuite name = "TLS_RSA_WITH_NULL_MD5" />
+            <CipherSuite name = "TLS_RSA_WITH_NULL_SHA" />
+            <CipherSuite name = "TLS_RSA_WITH_RC4_128_SHA" />
+            <CipherSuite name = "TLS_RSA_WITH_RC4_128_MD5" />
+            <CipherSuite name = "TLS_RSA_WITH_DES_CBC_SHA" />
+            <CipherSuite name = "TLS_RSA_WITH_3DES_EDE_CBC_SHA" />
+            <CipherSuite name = "TLS_RSA_WITH_AES_128_CBC_SHA" />
+            <CipherSuite name = "TLS_RSA_WITH_AES_256_CBC_SHA" />
+        </TlsCipherSuites>
+    </Tls-Security-->
+
+   </LocalConfig>
+                            
+   <PeerConfig>
+
+       <Timer    name = "Tc"             value = "30" />
+       <Timer    name = "Watchdog"       value = "60" />
+       <Timer    name = "Expiry"         value = "60" />
+  
+       <Peer    serverHostName = "{{ remote_host }}"
+	       realmName      = "{{ remote_realm }}"
+                tlsEnabled     = "no">          
+   
+           <!-- Multiple Transports but only of different
+                types ie. TCP or SCTP
+                If SCTP is specified it will be tried first
+           -->
+	   <Transport   type         = "{{ transport_type }}"
+		   serverIpAddr = "{{ remote_ip }}"
+		   port         = "{{ remote_port }}">
+           </Transport>
+
+       </Peer>
+
+   </PeerConfig>
+
+   <RealmConfig>
+
+        <Route     realmName        = "india.internal.net"
+                   localAction      = "local" > 
+                   <!-- proxyInfoAvpEnabled = "yes" -->
+
+            <Destination 
+		    peerName       = "{{ remote_host }}"
+                         applicationId  = "4"
+                         vendorId       = "0"
+                         priority       = "0" >
+            </Destination>
+
+        </Route>
+
+	<Route     realmName        = "india.internal.net"
+                   default          = "yes">
+
+            <Destination 
+		    peerName       = "{{ remote_host }}" >
+            </Destination>
+
+        </Route>
+
+   </RealmConfig>
+
+</ITS-Diameter>

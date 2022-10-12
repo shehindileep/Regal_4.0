@@ -1,0 +1,61 @@
+{
+    "description": "OCS_Single_Node_Setup",
+    "nodes": [
+      {
+        "cpu": {
+          "cpus": 2
+        },
+        "description": "",
+        "machineAllocation": {
+          "name": "m1",
+          "type": "mandatory"
+        },
+        "networkInterface": {
+          "interface0": {
+            "count": 1,
+            "mtu": 1500,
+            "speed": 1000
+          }
+        },
+        "nodeId": "1985648235158",
+        "nodeName": "ctf_perf_01",
+        "nodeType": "Lab-VM",
+        "os": {
+          "osName": "CentOS",
+          "platform": {
+            "applications": [
+              {
+                "appName": "CTF",
+                "appVersion": "RO-R14_7.7.0"
+              }
+            ],
+            "platformName": "default_platform"
+          },
+          "subnets": {
+            "diameter_ro": {
+              "interfaceType": "interface0",
+              "subnet": "192.168.182.0/24"
+            }
+          }
+        },
+        "ram": 2,
+        "ramUnit": "gb",
+        "storage": {
+          "disks": [
+            {
+              "capacity": 35,
+              "name": "vda",
+              "storageUnit": "gb"
+            },
+            {
+              "capacity": 100,
+              "name": "vdb",
+              "storageUnit": "gb"
+            }
+          ]
+        }
+      }
+    ],
+    "topologyName": "OCS_Single_Node_Setup",
+    "topologyType": "local"
+  }

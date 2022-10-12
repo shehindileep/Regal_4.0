@@ -1,0 +1,230 @@
+[dre]
+
+######################
+#Installation Details:
+######################
+
+#This section contains the mode of installation for IWF.
+#(whether installation is to be done in "Standalone" mode or #"HA" Mode)
+
+#Standalone mode=1, HA Active-ColdStandby Mode=3, HA Hot-Standby Mode=4
+install_mode=1
+
+###################################
+#Local Host Configuration details:
+###################################
+#This section comprises of IWF Local Host Configuration for #Diameter & SIGTRAN and Selection Criteria setting for 
+#selection of the Translator.
+
+#Diameter Configuration
+#----------------------
+[local_host]
+
+host_name=iwf
+realm_name=diametriq.com
+ip_address=127.0.0.1
+#public_ip_address=123.3.3.3
+
+#Transport configuration
+#-------------------------
+#Following  combinations of transports supported while installation 
+##1) Transport 1 , Transport 2  and Transport 3 
+##2) Only Transport 1 
+##3) Only Transport 2 
+##4) Only Transport 3 
+##5) Transport 1 and Transport 2 
+##6) Transport 1 and Transport 3 
+##7)Transport 2 and Transport 3 
+##comment/uncomment the transports accordingly
+
+#Transport 1
+transport_type=TCP
+port=3868
+
+#Transport 2
+#transport_type2=SCTP
+#port2=3868
+
+#Transport 3
+#transport_type3=TCP
+#secure_port=5658
+
+
+#Sigtran configuration
+#---------------------
+
+#M3UA 
+#----
+point_code=2057
+
+#SCCP
+#-------------------
+#This section contains the different parameters to be configured for GT Configuration.
+
+#Routing indicator :possible values SSN , GT 
+routing_indicator=GT
+#---------------------
+
+#Global Title Indicator(GTI) can contain below set of values
+#Reference: ITU-T-Q.713-Signalling connection control part formats and codes)
+
+#GTI=1 (Global Title includes nature of address indicator only)
+#GTI=2 (Global Title includes translation type only)
+#GTI=3 (Global Title includes translation type, numbering plan and encoding scheme) 
+#GTI=4 (Global title includes translation type, numbering plan, encoding scheme and nature of address indicator)
+
+global_title_indicator=4
+
+#Translation type(TT) range <0-255>
+translation_type=0
+
+#Numbering plan(NP) range <0-15>
+numbering_plan=1
+
+#Encoding scheme(ES) range <0-15>
+encoding_scheme=2
+
+#Nature of address indicator(NAI) range <0-4> 
+nature_of_address_indicator=4
+
+#Global title address information
+global_title_address_information=3306987652
+
+
+# ssn possible values
+# HLR , SGSN , CAP
+ssn=CAP
+
+
+#TCAP Timer configuration
+#-------------------------
+#tcap_invoke_timer range 1 to 65535
+tcap_invoke_timer=30
+
+#Setting of Selection Criteria
+#------------------------------
+#This section represents the way of setting the Selection Criteria for the respective Translators.
+
+#selection criteria possible values
+# MCC_MNC = 1, 
+# GTT = 8, 
+# GTT_AND_MCC_MNC = 9, 
+# SERVICE_KEY = 16,
+# SERVICE_KEY_AND_MCC_MNC = 17,
+# GTT_AND_SERVICE_KEY = 24
+# IMSI_PREFIX_AND_SERVICE_KEY = 25
+selection_criteria=25
+#----------------------
+
+#Use self SCCP Address 
+#---------------------
+#Possible values yes or no
+self_sccp_addr_use_from_config=yes
+
+#Use SCCP Called Party Address from incomming message
+#---------------------------------------------------
+#Possible values yes or no
+use_sccp_cdpa_from_incomming_msg=yes
+
+#Include PointCode in SCCP AddressIndicator 
+#------------------------------------------
+#Possible values yes or no
+has_pc=yes
+
+#Node Configurations for StandAlone and HA-SetUp
+#ASP-ID1/HostName1 for Node1
+#---------------------------
+#AspId range 1 to 65535
+host_name1={{ hostname }}
+asp_id1=1
+
+#ASP-ID2/HostName2 for Node2
+#---------------------------
+#HostName2/AspId2 should not match with HostName1/AspId1
+#AspId range 1 to 65535
+host_name2=IWF-2
+asp_id2=2
+
+################################
+Platform Configuration details:
+################################
+#TIPC Configuration
+[tipc]
+#net id range 1000 to 9999
+net_id=2071
+
+#tipc_node_address format <ZoneId.ClusterId.NodeId> 
+#where ZoneId,ClusterId and NoneId are Positive values
+#update: tipc_node_address comes from 2_last_digits_of_point_code 2071 and nodeId
+tipc_node_address=7.1.1
+
+#bearer_name, here "eth:" is the prefix
+# "bond1" is the available ethernet interface in the system
+bearer_name=eth:{{ interface_name }} 
+
+#(bearer name should be configured with the Ethernet interface which is available in the system)
+
+#Mysql configuration
+[mysql]
+mysql_root_password=diametriq@123
+
+#NTP server Configuration
+[ntp]
+ntp_server_ip=128.138.140.44
+
+[bonding]
+#Bonding configuration(optional)
+bonding=no
+#(Bonding is required when IWF installation mode is with Highly Availability mode of configuration)
+
+#below bonding cfg are applicable if bonding=yes
+
+#format: ip_<bond name>=a.b.c.d/x
+#        interface1_<bond_name>=<devname>
+#        interface2_<bond_name>=<devname>
+#ip_bond0=10.1.33.100/24
+#interface1_bond0=eth1
+#interface2_bond0=eth2
+
+#ip_bond1=172.1.3.101/16
+#interface1_bond1=eth3
+#interface2_bond1=eth4
+
+
+
+#Alarms configuration
+#[alarm]
+#trap_sink_ip1=172.16.10.20
+#trap_sink_ip2=172.16.10.21
+#trap_sink_ip<n>=
+
+
+#---------------------------------------------------------------------------
+#  THE BELOW CONFIGURATIONS ARE APPLICABLE ONLY IF install_mode is 2/3
+#(i.e. if Active-Standby or Active-cold-Standby configuration) #
+#---------------------------------------------------------------------------
+
+#Mysql Heartbeat configurations
+#[mysql_heartbeat]
+mysql_local_ip=10.235.2.121
+mysql_mate_ip=10.235.2.122
+mysql_mate_hostname=IWF-2
+ha_mode=master
+##virtual ip in cidr notation
+mysql_virtual_ip=10.235.2.120/24
+mysql_interface_name={{ interface_name }}
+
+
+
+#rsync_configuration ( )
+
+
+#-------------------------------------------------------------------------
+#  THE BELOW CONFIGURATIONS ARE APPLICABLE ONLY IF install_mode=4     #
+#--------------------------------------------------------------------------
+#[couchbase]
+#optional configuration ram_size
+#30% of total ram prefered
+#ram_size=1200
+
+

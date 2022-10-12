@@ -1,0 +1,24 @@
+#!/bin/sh
+########################################################################
+#
+# Copyright 2006 IntelliNet Technologies, Inc. All Rights Reserved.
+#          Manufactured in the United States of America.
+#   1990 W. New Haven Ste. 312, Melbourne, Florida, 32904 U.S.A.
+#
+########################################################################
+#
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ITS_ROOT/common/lib:$LD_LIBRARY_PATH:../lib::$IMS_ROOT/dframe/lib:$IMS_ROOT/vendors/IntelliNet/lib:$IMS_ROOT/vendors/IntelliNet/dcca/lib:$IMS_ROOT/api/c++/mtest/diameter/app_stat/lib:$IMS_ROOT/api/c++/lib
+
+export LD_LIBRARY_PATH
+export PATH=.:$PATH
+unset ISS7_CONFIG_DIR
+
+# USAGE
+# sampleS6AR10AppD -load -oh (OriginHost) -or (OriginRealm) -dh (DestinationHost) 
+#            -dr (DestinationRealm) -configFile (xmlFileName)
+
+
+#./sampleS6AR10AppD -oh snoopycl -or india.internal.net -dh snoopy -dr india.internal.net -configFile demo.xml.client
+./{{ sample_binary }}  -oh {{ local_host }}   -or {{ local_realm }} -dh {{ dest_host }} -dr {{ dest_realm }} -imsistart 404120000000001 -imsiend 404120000000001  -configFile {{ demo_xml_file }}
+
+

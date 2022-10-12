@@ -1,0 +1,48 @@
+#!/bin/bash
+#/etc/rc.d/init.d/kafka
+
+# Source function library.
+. /etc/init.d/functions
+
+
+start() {
+        echo -n "Starting iwfmsgstats... "
+	if test -f "/tmp/iwf_stats_pid"; 
+	then
+		echo "Script is already runnig"
+	else 
+	{
+		nohup python /opt/remoteregal/statsscripts/iwfmsgstats.py & 
+		echo $! > /tmp/iwf_stats_pid
+		echo -n "started .." 
+        	return 0
+	}
+	fi
+}
+
+stop() {
+        echo -n "Stopping iwfmsgstats.."
+        #ps -ef | grep python | grep iwfmsgstats | grep -v grep | awk '{print $2}' | xargs kill
+        kill -9 `cat /tmp/iwf_stats_pid`
+	rm /tmp/iwf_stats_pid
+	return 0
+}
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: iwfmsgstats {start|stop|status|restart}"
+ exit 1
+        ;;
+esac
+exit $?

@@ -1,0 +1,23 @@
+#!/bin/sh
+########################################################################
+#
+# Copyright 2006 IntelliNet Technologies, Inc. All Rights Reserved.
+#          Manufactured in the United States of America.
+#   1990 W. New Haven Ste. 312, Melbourne, Florida, 32904 U.S.A.
+#
+########################################################################
+#
+
+
+
+# USAGE
+# sampleS6AApp -load -oh (OriginHost) -or (OriginRealm) -dh (DestinationHost) 
+#            -dr (DestinationRealm) -configFile (xmlFileName)
+
+rm -rf core.*
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ITS_ROOT/tls/lib:$ITS_ROOT/common/lib:../lib:$IMS_ROOT/dframe/lib:$IMS_ROOT/api/c++/mtest/diameter/app_stat/lib:$IMS_ROOT/apps/lib:../../lib:../lib
+
+export LD_LIBRARY_PATH
+
+./{{ sample_binary }} -load -oh {{ local_host }}   -or {{ local_realm }} -dr {{ dest_realm }} -rt {{ reciever_thread }} -st {{ sender_thread }} {{ imsi_range }}  -configFile {{ demo_xml_file }} {{ tt_config }} 
+exit 0

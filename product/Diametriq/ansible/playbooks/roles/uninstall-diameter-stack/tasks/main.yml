@@ -1,0 +1,81 @@
+#  command-line args (--extra-vars switch)
+#    rep_url (ex http://172.16.5.198:5000/NNI-titan-edge-7.14.0-20190308.042234-468-linux-x64.sh)
+---
+   - name: Check host_id saved file is exist
+     stat: 
+       path: /opt/old_hostid.txt
+     register: hostid_file
+        
+   - name: Get previous hostid
+     shell: "cat /opt/old_hostid.txt"
+     register: host_id
+     when: hostid_file.stat.exists
+
+   - debug:
+       msg: "host id stored file is not exists"
+     when: not hostid_file.stat.exists
+
+   - name: Check host_id change script exist
+     stat: 
+       path: /opt/change_host_id
+     register: hostid_script
+        
+   - debug:
+       msg: "hosid change script not exists"
+     when: not hostid_file.stat.exists
+
+   - name: Revert back host_id to previous host_id if change_host_id script exist
+     shell: "./change_host_id {{ host_id }}"
+     args:
+       chdir: "/opt"
+     when: hostid_script.stat.exists and hostid_file.stat.exists
+
+   - name: Check package name file exist
+     stat: 
+       path: /opt/Diametriq/package_name.txt
+     register: pack_name_file
+        
+   - name: Get packages installed
+     shell: "cat /opt/Diametriq/package_name.txt"
+     register: packages_installed
+     when: pack_name_file.stat.exists
+
+   - name: List the packages under the directory /opt/Diametriq/
+     shell: ls 
+     args:
+       chdir: "/opt/Diametriq/"
+     register: packages_present
+
+#   - debug:
+#       msg: "There are no installed packages present to uninstall, so skipping uninstall of Diameter packages"
+#     register: res_one
+#     when: pack_name_file.stat.exists == False or packages_installed.stdout == ''
+
+   - debug:
+       msg: "No packages found under /opt/Diametriq directory, so skipping uninstall of Diameter packages"
+     register: res_two
+     when: packages_present.stdout == ''
+
+   - name: Remove the packages installed
+     file:
+       path: "/opt/Diametriq/{{ item }}"
+       state: absent
+     with_items:
+       - "{{ packages_present.stdout.split() }}"
+     when:
+         res_two is skipped and item.startswith(package_name_req) and ( not item.endswith(( "tgz", "g++" ) ) or not version_req in item.split("-")  )
+
+   - name: Remove host_id change script file
+     file:
+       path: /opt/change_host_id
+       state: absent
+
+   - name: Remove the host_id file
+     file:
+       path: /opt/old_hostid.txt
+       state: absent
+
+   - name: Remove package_installed list file
+     file:
+       path: /opt/Diametriq/package_name.txt
+       state: absent
