@@ -1,6 +1,0 @@
----
-
-- hosts: "{{ hosts }}"
-  gather_facts: false
-  tasks:
-    - "{{ mod }}": "{{ args }}"

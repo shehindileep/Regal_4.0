@@ -1,7 +1,0 @@
-#  command-line args (--extra-vars switch)
-#    rep_url (ex http://172.16.5.198:5000/NNI-titan-edge-7.14.0-20190308.042234-468-linux-x64.sh)
-#
----
-
-   - name: UnInstall IWF
-     shell: . /opt/diametriq/iwf/bin/uninstall_iwf.sh -r 
