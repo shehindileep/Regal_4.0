@@ -1,0 +1,107 @@
+#  command-line args (--extra-vars switch)
+#    rep_path (ex /NNI-titan-edge-7.14.0-20190308.042234-468-linux-x64.sh)
+#
+---
+   - set_fact:
+      file_name : "{{ rep_path.split('/')[-1] }}"
+
+   - set_fact:
+      config_name : "{{ config_src_path.split('/')[-1] }}"
+
+   - set_fact:
+       host_script_name: "{{ src_hostid_script_path.split('/')[-1] }}"
+
+   - name: Creates directory  /home/admin if it doesnt exist
+     file:
+       path: /home/admin
+       state: directory
+
+   - set_fact:
+      file_path : /home/admin/{{ file_name }}
+   
+   - set_fact:
+      config_path : /home/admin/{{ config_name }}
+
+   - name: Download IWF installer
+     copy:
+        src: "{{ rep_path }}"
+        dest: "{{ file_path }}"
+   
+
+   - name: copy iwf config file 
+     template:
+        src : "{{ config_src_path }}"
+        dest: "{{ config_path }}"
+
+   - name: chmod IWF Installer
+     file:
+       path: "{{ file_path }}"
+       mode: 0744
+
+   - name: chmod Config name Installer
+     file:
+       path: "{{ config_path }}"
+       mode: 0744
+
+   - name: Install IWF
+     shell: "{{ file_path }} --configFile {{ config_path }}"
+
+   - name: copy host_id change script
+     copy:
+       src: "{{ src_hostid_script_path }}"
+       dest: "/opt/"
+     when: file_name is search("iwf") # if iwf in file_name
+
+   - name: change permission
+     file:
+       path: "/opt/{{ host_script_name }}"
+       mode: 0744
+     when: file_name is search("iwf") # if iwf in file_name
+
+   - name: Get system hostid
+     shell: hostid
+     register: sys_host_id
+     when: file_name is search("iwf") # if iwf in file_name
+    
+   - name: Create file and store host_id 
+     copy:
+       dest: /opt/old_hostid.txt
+       content: |
+         {{ sys_host_id.stdout }}
+     when: file_name is search("iwf") # if iwf in file_name
+
+   - name: Changing hosid of system using script
+     shell: "./{{  host_script_name }} {{ host_id }}"
+     args:
+       chdir: "/opt/"
+     when: file_name is search("iwf") # if iwf in file_name
+
+   - name: copy licence  to iwf config path 
+     copy:
+       src: "{{ src_licence_file }}"
+       dest: "/opt/diametriq/iwf/config/"
+     when: file_name is search("iwf") # if iwf in file_name
+
+   - name: copy licence  to iwf-ss7 perf bin path 
+     copy:
+       src: "{{ src_licence_file }}"
+       dest: "/opt/diametriq/iwf/test/PerfSim/bin"
+     when: file_name is search("iwf") # if iwf in file_name
+
+   - name: copy licence  to iwf-dia perf bin path  
+     copy:
+       src: "{{ src_licence_file }}"
+       dest: "/opt/diametriq/iwf/test/ro_tsl_perf/bin"
+     when: file_name is search("iwf") # if iwf in file_name
+   
+        #- name: Remove IWF installer
+   #  file:
+   #    path: "{{ file_path }}"
+   #    state: absent
+
+   #- name: Remove ConfigFile file
+   #  file:
+   #    path: "{{ file_path }}"
+   #    state: absent
+
+

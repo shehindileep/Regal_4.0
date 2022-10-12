@@ -1,0 +1,579 @@
+<?xml version="1.0"?>
+
+<!-- Sample XML file for application configuration (INI). -->
+
+<Application name           = "IWF"
+             type           = "console-application"
+             globalStart    = "ITU-TCAP"
+             binding        = "CPP"
+             library        = "libIWF-CCITT.so"
+             appSelector    = "SSGCB_ApplicationSelector"
+             preFunc        = "SSGPreFunc"
+             postFunc       = "SSGPostFunc">
+
+    <AppOptions name = "traceFlushAfterWrite"         value = "yes"/>
+    <AppOptions name = "routeUniqueLinkCodesRequired" value = "yes"/>
+    <AppOptions name = "memPoolChecksOn"              value = "no"/>
+    <AppOptions name = "DiameterConfigFile"   value = "/opt/diametriq/iwf/config/iwf_dia.xml"/>
+
+    <AppOptions name = "SSG_STACK_POINTCODE"      value = "2057"/>
+    <AppOptions name = "STP_POINTCODE"            value = "4114"/>
+    <AppOptions name = "SSG_REQ_TIMER"            value = "200"/>
+    <AppOptions name = "SSG_NPN_VALUE"            value = "91"/>
+
+    
+    <FaultTolerance
+        maxNumFtGroups      = "2"
+        maxNumProcesses     = "1"
+        maxNumNodes         = "1"
+        nodeId              = "0"
+        processId           = "0"
+        tcapFtGroupId       = "0"
+        sccpFtGroupId       = "0"
+        mtp3FtGroupId       = "0"
+        isupFtGroupId       = "0"
+        routingFtGroupId    = "0"
+        timersFtGroupId     = "0"
+        mgmtDataFtGroupId   = "0"
+    >
+
+        <Procedures>
+
+        </Procedures>
+
+        <Callbacks>
+
+        </Callbacks>
+
+        <FtGroups>
+
+            <FtGroup
+                ftGroupId      = "0"
+                ftGroupName    = "FtGroup0"
+            >
+
+                <DsmConfig
+                     dsmSize         = "20971520"
+                     dsmBaseAddress  = "0x80000000"
+                     dsmMaxNumTables = "256"
+                     dsmType         = "STUB"
+                />
+
+                <!-- Note: MUST include itself. -->
+                <!-- Note: nodeName and processName are optional attributes. -->
+
+                <FtGroupMembers>
+
+                    <FtGroupMember
+                        nodeId      = "0"
+                        nodeName    = "Node0"
+                        processId   = "0"
+                        processName = "Node0Process0"
+                    />
+
+                </FtGroupMembers>
+
+
+                <!-- Note: MUST NOT include itself. -->
+                <!-- Note: Master FtGroupMembers are tried in order. -->
+
+                <MasterFtGroupMembers>
+
+                </MasterFtGroupMembers>
+
+                <Callbacks>
+
+                </Callbacks>
+
+            </FtGroup>
+            <FtGroup
+                ftGroupId      = "1"
+                ftGroupName    = "FtGroup1"
+            >
+                <DsmConfig
+                     dsmSize         = "20971520"
+                     dsmBaseAddress  = "0x90000000"
+                     dsmMaxNumTables = "256"
+                     dsmType         = "STUB"
+                />
+                <FtGroupMembers>
+                    <FtGroupMember
+                        nodeId      = "0"
+                        nodeName    = "Node0"
+                        processId   = "0"
+                        processName = "Node0Process0"
+                    />
+                </FtGroupMembers>
+                <MasterFtGroupMembers>
+                </MasterFtGroupMembers>
+
+                <Callbacks>
+                </Callbacks>
+            </FtGroup>
+        </FtGroups>
+
+    </FaultTolerance>
+
+    <Feature
+        name        = "DSM  - STUB"
+        library     = "libDSM-STUB.so"
+        classRec    = "itsDSM_StubImplClass"
+    />  
+    <!--Feature
+        name        = "Vendor Framework ANSI"
+        library     = "libCOAVFrame.so"
+        classRec    = "itsSS7STACK_ClassANSI"
+    /-->
+    <!--Feature
+        name        = "IntelliNet stack ANSI"
+        library     = "libCCITT-ANSI-VENDOR.so"
+        classRec    = "itsINTELLISS7_ClassANSI">
+        <FeatureOption name="ANSI Stack Mask"
+                       value="ANSI-SCCP+ITU-TCAP"/>
+    </Feature-->
+
+    <Feature
+        name        = "Vendor Framework CCITT"
+        library     = "libVFrame.so"
+        classRec    = "itsSS7STACK_ClassCCITT">
+    </Feature>  
+    
+    <Feature
+        name        = "IntelliNet stack CCITT"
+        library     = "libCCITT-VENDOR.so"
+        classRec    = "itsINTELLISS7_ClassCCITT">
+        <FeatureOption name="CCITT Stack Mask"
+                       value="ITU-TCAP"/>
+    </Feature>  
+    
+    <Feature
+        name        = "DBC Server Class"
+        library     = "libENGINE.so"
+        classRec    = "itsDBC_ServerClass"
+    />  
+    <Feature
+        name        = "LKSCTP"
+        library     = "libLKSCTP.so"
+        classRec    = "itsLKSCTP_Class"
+    />
+    <Feature
+        name        = "UAL_Manager"
+        library     = "libUAL.so"
+        classRec    = "itsUAL_Class"
+    />
+    <Feature
+        name        = "CCITT-M3UA"
+        library     = "libCCITT-M3UA.so"
+        classRec    = "itsM3UA_Class_CCITT"
+    />
+    <Feature
+        name = "DCCA"
+        library = "libdccacore.so"
+        classRec = "itsDCCA_Class"
+    />
+
+    <Feature
+    name        = "OAM Server Class"
+    library     = "libDiaOAMServer.so"
+    classRec    = "itsDIAOAMServer_Class"
+    />
+
+    <!--Feature
+        name        = "ANSI-M3UA"
+        library     = "libANSI-M3UA.so"
+        classRec    = "itsM3UA_Class_ANSI"
+    /-->
+
+   <ParserExtension library     = "libUAL.so"
+                     elementName = "UAL_Manager"
+                     startFunc   = "UAL_ParseStartFunc"
+                     stopFunc    = "UAL_ParseStop"
+                     xlateFunc   = "UAL_ResourceXlate"
+                     diffFunc    = "UAL_ExtensionDiff"
+    />
+    <UAL_Manager  useSCMGCallBack   = "no"
+                   localPointCode    = "1">
+		   <!--UAL_AppMode>
+		   	<IPSPType>
+		   		<ExchangeMode value = "single"/>
+		   		<Client       value = "no"/>
+		   	</IPSPType>
+		   </UAL_AppMode-->
+              <!-- For SSG SSN 5 -->
+    </UAL_Manager>
+
+
+ <ToolkitTrace>
+        <Critical  output = "stdout"/>
+        <Error     output = ""/>
+        <Warning   output = ""/>
+        <Debug     output = ""/>
+    </ToolkitTrace>
+
+    <ApplicationTrace>
+        <Critical     output="stdout"/>
+        <Error        output=""/>
+        <Warning      output=""/>
+        <Debug        output=""/>
+    </ApplicationTrace>
+
+    <AppOptions name = "DccaTxTimerValue"   value = "30"/>
+    <AppOptions name = "DccaCcfhValue"      value = "0"/>
+    <AppOptions name = "DccaUpdateErrorAction"      value = "1"/> <!-- value = 0 to disable, value =1 to enable-->
+
+
+
+     <!--/////////////// LINK SETS //////////////-->
+
+    <!-- link set for internal routing (TCAP) -->
+    <LinkSet id           = "0"
+             family       = "ITU"
+             adjacentSTP  = "no"
+             numToStart   = "0">
+        <NI     value = "0x00"/>
+        <APC    value = "0"/>
+        <LPC    value = "2057"/>
+    </LinkSet>
+
+    <!-- link set for STP external routing (TCAP) -->
+    <!--LinkSet id           = "1"
+             adjacentSTP  = "no"
+             numToStart   = "1"
+             family       = "ITU">
+        <NI     value = "0x80"/>
+        <APC    value = "4114"/>
+        <LPC    value = "2057"/>
+    </LinkSet-->
+
+
+    <!--///////////////Route Info //////////////-->
+    <!-- local route for TCAP (SSG)-->
+    <Route  type     = "localRoute"
+            family   = "ITU"
+            style    = "dpc-sio-ssn"
+            linkSet  = "0"
+            priority = "0">
+        <DPC    value = "2057"/>
+        <SIO    value = "0x03"/>
+        <SSN    value = "146"/>
+    </Route>
+
+
+    <!-- local route for SCCP -->  
+    <Route  type     = "localRoute"
+            family   = "ITU"
+            style    = "dpc-sio"
+            linkSet  = "0"
+            priority = "0">
+        <DPC    value = "2057"/>
+        <SIO    value = "0x03"/>
+    </Route> 
+
+
+    <!-- Dummy route for (SSG thru STP) non-adjacent node --> 
+    <!--Route  type    = "remoteRoute"
+            style   = "dpc-sio-ssn"
+            linkSet = "1"
+            priority = "0"
+            family   = "ITU">
+        <DPC    value = "4114"/>
+        <SIO    value = "0x83"/>
+        <SSN    value = "6"/>
+    </Route-->
+
+    <!-- Concerned route is -->
+    <!--
+    <Route family   = "ITU"
+           linkSet  = "0"
+           priority = "1"
+           style    = "dpc-opc-sio-ssn"
+           type     = "concernedRoute">
+        <DPC  value = "4114" />
+        <LPC  value = "2057" />
+        <SIO  value = "0x83" />
+        <SSN  value = "149" />
+        <LSSN value = "6" />
+    </Route>
+    -->
+    <!--Route type    = "routingKeyRoute"
+           style   = "dpc-sio-ssn"
+           family  = "ITU">
+       <routingKey   value = "0x81"/>
+       <DPC          value = "2057"/>
+       <SIO          value = "0x83"/>
+       <SSN          value = "149"/>
+    </Route-->
+
+    <!--///////////////////////////////////////////////////////////////-->
+
+    <WorkerPool stackSize = "0">
+
+        <Transport  type   = "TaskQueue"
+                    count  = "2"
+                    family = "">
+
+            <Modifier value = "SCCP"/>
+
+            <Callbacks
+                      library    = "libIWF-CCITT.so"
+                      type       = "blocking"
+                      preInitialize   = "null"
+                      postInitialize  = "WPTQ_PostInitialize"
+                      preNextEvent    = "null"
+                      nextEventFailed = "null"
+                      postNextEvent   = "WPTQ_PostNextEvent"
+                      userDispatch    = "null"
+                      preTerminate    = "null"
+                      postTerminate   = "null"/>
+        </Transport>
+
+    </WorkerPool>
+
+    <BorderPool stackSize = "0">
+
+        <Transport  name    = "Debug Console Dispatcher"
+                   type    = "ServerSocket"
+                   family  = "">
+
+            <StreamData socketDomain    = "INET"
+                        serverHostName  = "127.0.0.1"
+                        serverPort      = "7001"
+            />
+
+            <Callbacks
+                type        = "debug-console"
+            />
+
+            </Transport>
+        <Transport  name   = "DiaOAMServer"
+                    type    = "ServerSocket"
+                    family  = "0">
+
+            <StreamData socketDomain    = "INET"
+                        serverHostName  = "127.0.0.1"
+                        serverPort      = "5555"
+            />
+
+            <Callbacks
+                    library         = "libDiaOAMServer.so"
+                    type            = "blocking"
+                    preInitialize   = "OAMServerPreInit"
+                    postInitialize  = "OAMServerPostInit"
+                    preNextEvent    = "null"
+                    nextEventFailed = "null"
+                    postNextEvent   = "OAMServerPostNext"
+                    userDispatch    = "null"
+                    SCCPDispatch    = "null"
+                    ISUPDispatch    = "null"
+                    preTerminate    = "null"
+                    postTerminate   = "null"
+            />
+
+        </Transport>
+
+     <!--Transport  name    = "SCTPClient-1"
+                    type    = "Datagram"
+                    family  = "ITU">
+            <Modifier value = "SCTP"/>
+            <Modifier value = "MTP3"/>
+            <DatagramData   localHostName   = "127.0.0.1"
+                            localPort       = "3213">
+                 <Associate  value  = "ASP 1"/>
+            </DatagramData>
+            <SCTP   maxInStreams      = "32"
+                    numOutStreams     = "32"
+                    maxAttempts       = "-1"
+                    cookieLife        = "30"
+                    hbOn              = "yes"
+                    initTimeOut       = "5,0"
+                    sendTimeOut       = "1,0"
+                    recvTimeOut       = "0,300"
+                    hbTimeOut         = "10,0"
+                    shutdownTimeOut   = "5,0"
+                    pmtuTimeOut       = "600,0"
+                    isClient          = "yes"
+                    payloadType       = "CCITT-M3UA">
+            </SCTP>
+       </Transport>
+       <Transport   name    = "ASP 1"
+                    type    = "Virtual"
+                    family  = "ITU">
+            <Modifier value = "SCTP"/>
+            <Modifier value = "MTP3"/>
+            <DatagramData   socketDomain    = "INET"
+                            serverHostName  ="127.0.0.1"
+                            serverPort      = "9999">
+            </DatagramData>
+            <Link        id             = "0"
+                         family         = "ITU"
+                         linkSet        = "1"
+                         initialActive  = "yes"
+                         terminalFixed  = "yes"
+                         dataLinkFixed  = "yes"
+                         priority       = "0"
+                         terminal       = "0"
+                         dataLink       = "0"
+            />
+       </Transport-->
+
+
+    </BorderPool>
+
+    <!--///////////////////////////////////////////////////////////////-->
+
+     <SS7-Stacks>        
+                        
+        <!--///////////////////////////////////////////////////////////-->
+
+        <IntelliNet>
+
+	      <ITU-MTP3 variant = "WhiteBook_97">
+
+                <StackTrace>
+                    <Critical output = "stdout"/>
+                    <Error    output = ""/>
+                    <Warning  output = ""/>
+                    <Debug    output = ""/>
+                </StackTrace>
+
+                <BehaviorControl
+                    STPFunction = "no"
+                />
+
+                <Timers
+                     T1 = "800"
+                     T2 = "1400"
+                     T3 = "800"
+                     T4 = "800"
+                     T5 = "800"
+                     T6 = "800"
+                     T7 = "800"
+                     T8 = "800"
+                     T9 = "0"
+                    T10 = "30000"
+                    T11 = "30000"
+                    T12 = "800"
+                    T13 = "800"
+                    T14 = "2000"
+                    T15 = "2000"
+                    T16 = "1400"
+                    T17 = "800"
+                    T18 = "0"
+                    T19 = "480000"
+		    T20 = "3000"
+                    T21 = "3000"
+                    T22 = "30000"
+                    T23 = "30000"
+
+                    T24 = "30000"
+                    T25 = "30000"
+                    T26 = "12000"
+                    T27 = "2000"
+                    T28 = "3000"
+                    T29 = "60000"
+                    T30 = "30000"
+                    T31 = "10000"
+                    T32 = "5000"
+                    T33 = "60000"
+                    T34 = "5000"
+                    SLT-T1 = "5000"
+                    SLT-T2 = "30000"
+                />
+
+            </ITU-MTP3>
+
+
+            <ITU-SCCP variant = "WhiteBook"> 
+                    
+                <Variant value = "WhiteBook"/>
+  
+                <StackTrace>
+                    <Critical output = "stdout"/>
+                    <Error    output = ""/>
+                    <Warning  output = ""/>
+                    <Debug    output = ""/>
+                </StackTrace>
+                
+                <Timers
+                    TstatInfo    = "30"
+                    TcoordChg    = "30"
+                    TignoreSST   = "30"
+                    TrtgStatInfo = "30"
+                    Tconnect     = "30"
+                    Trelease     = "10"
+                    Treset       = "20"
+                    Tias         = "300"
+                    Tiar         = "660"
+                    Tguard       = "240"
+                />
+             
+                <BehaviorControl
+                    PropagateIT   = "no"
+                    PropagateERR  = "no"
+                    PropagateSCMG = "no"
+                    EnableSCMG = "no"
+                 />
+
+            </ITU-SCCP>
+
+            <!--///////////////////////////////////////////////////////////////-->
+
+            <ITU-TCAP variant = "WhiteBook">
+
+                <StackTrace>
+                    <Critical output = "stdout"/>
+                    <Error    output = ""/>
+                    <Warning  output = ""/>
+                    <Debug    output = ""/>
+                </StackTrace>
+
+                <Timers
+                    Treject = "5"
+                />
+            <Link   id       = "1"
+             family       = "ITU"
+             linkSet         = "0"
+             initiallyActive = "yes"
+             terminalFixed   = "yes"
+             dataLinkFixed   = "yes"
+             isSAAL          = "yes"
+             isLocal         = "yes"
+             priority        = "0"
+             terminal        = "0"
+             dataLink        = "0"
+            />
+
+            </ITU-TCAP>
+
+        </IntelliNet>
+
+    </SS7-Stacks>
+   <Sigtran-Stacks>
+         <SCTP>
+            <SigtranTrace>
+                 <Critical output = "stdout"/>
+                 <Error    output = ""/>
+                 <Warning  output = ""/>
+                 <Debug    output = ""/>
+            </SigtranTrace>
+         </SCTP>
+         <UAL>
+            <SigtranTrace>
+                 <Critical output = "stdout"/>
+                 <Error    output = ""/>
+                 <Warning  output = ""/>
+                 <Debug    output = ""/>
+            </SigtranTrace>
+         </UAL>
+         <M3UA>
+            <SigtranTrace>
+                 <Critical output = "stdout"/>
+                 <Error    output = ""/>
+                 <Warning  output = ""/>
+                 <Debug    output = ""/>
+            </SigtranTrace>
+         </M3UA>
+  </Sigtran-Stacks>
+
+</Application>
+

@@ -1,0 +1,25 @@
+#!/bin/bash
+########################################################################
+#
+# Copyright 2006 IntelliNet Technologies, Inc. All Rights Reserved.
+#          Manufactured in the United States of America.
+#   1990 W. New Haven Ste. 312, Melbourne, Florida, 32904 U.S.A.
+#
+########################################################################
+# USAGE
+#client  -oh (OriginHost) -or (OriginRealm) -dh (DestinationHost)
+#        -dr (DestinationRealm) -sp (Server Port) -srvip ( Server IP Address)
+#        [ -bksp (Backup Server Port) -bksrvip (Backup Server IP Address) ]
+#        -contype (Connection Type: primary / backup )
+
+#
+#     -bksp -bksrvip are Optional parameters and used only with redundant IDS.
+
+LD_LIBRARY_PATH=$IMS_ROOT/apps/lib/:$IMS_ROOT/api/lib/:$IMS_ROOT/AcceleroCore/lib/
+export LD_LIBRARY_PATH
+
+./{{ sample_binary }} -oh  {{ local_host }}   -or {{ local_realm }} -dh {{ dest_host }} -dr {{ dest_realm }}  -sp {{ dss_ids_port }} -srvip "{{ dss_ids_ip }}" -contype primary
+
+exit 0
+
+

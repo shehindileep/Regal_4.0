@@ -1,0 +1,15 @@
+#!/bin/bash
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../lib:/usr/local/lib:/usr/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ITS_ROOT/common/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ITS_ROOT/../vendors/IntelliNet/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ITS_ROOT/MTP3/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ITS_ROOT/GSMMAP/lib
+unset ISS7_CONFIG_DIR
+
+ulimit -c unlimited
+#rm core.*
+
+./sampleAppCCITT load opc 4114 dpc 2057 send noISD -configFile {{ tcap_iwf_itu }}
+#valgrind -v --leak-check=full --show-reachable=yes --error-limit=no --track-origins=yes --gen-suppressions=all --log-file=iwf_valgrind_out.txt.%p ./sampleAppCCITT load opc 4114 dpc 2057 send noISD -configFile tcap_iwf_itu
+#gdb --args ./sampleAppCCITT load opc 4114 dpc 2057 send noISD -configFile tcap_iwf_itu
+#./sampleAppCOAD opc 4114 dpc 2057 send -configFile tcap_iwf.xml

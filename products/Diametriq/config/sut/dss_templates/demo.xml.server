@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+
+<!-- Sample XML file for application configuration (INI). -->
+
+<Application name           = "IDS"
+             type           = "console-application"
+             globalStart    = ""
+             binding        = "CPP"
+             library        = "libDiaServert.so"
+             appSelector    = "RouteAllToApp"
+             preFunc        = "IDSPreFunc"
+             postFunc       = "IDSPostFunc">
+
+    <AppOptions name = "traceFlushAfterWrite"         value = "yes"/>
+    <AppOptions name = "syslogFacility"               value = "local6"/> <!--applicable only if trace output is syslog-->
+    <AppOptions name = "routeUniqueLinkCodesRequired" value = "yes"/>
+    <AppOptions name = "memPoolChecksOn"              value = "no"/>
+
+    <AppOptions name = "DiameterConfigFile"   value = "{{ its_dia_file}}"/>
+    <AppOptions name = "HeartBeatInterval"   value = "10"/> <!-- in seconds, def(15), min(0) & max(30) -->
+    <AppOptions name = "HeartBeatRetry"   value = "3"/> <!-- def(2), min(1) & max(3) -->
+    <AppOptions name = "RoutingScheme"   value = "roundrobin"/>
+    <AppOptions name = "DccaTxTimerValue"   value = "10"/>
+    <AppOptions name = "DccaCcfhValue"   value = "0"/>
+
+    <AppOptions name = "hmiCheckInterval"   value = "2"/>
+    <AppOptions name = "hmiTimeOutInterval" value = "1"/>
+    <AppOptions name = "hmiRetry"           value = "2"/>
+    <AppOptions name = "hmiHBInterval"      value = "500"/>
+
+    <!-- TCP Transport for IDC connections -->
+    <AppOptions name = "IdcTcpTransIp"   value = "{{ dss_ids_ip }}"/>
+    <AppOptions name = "IdcTcpTransPort" value = "{{ dss_ids_port }}"/>
+    <AppOptions name = "IdcNonBlockingInterval" value = "10000"/> <!-- in micro seconds -->
+    <AppOptions name = "IdcNonBlockingRetryCount" value = "20"/>
+
+    <FaultTolerance
+        maxNumFtGroups      = "2"
+        maxNumProcesses     = "1"
+        maxNumNodes         = "1"
+        nodeId              = "0"
+        processId           = "0"
+        mtp3FtGroupId       = "0"
+        routingFtGroupId    = "0"
+        timersFtGroupId     = "0"
+        mgmtDataFtGroupId   = "0"
+    >
+
+        <Procedures>
+
+        </Procedures>
+
+        <Callbacks>
+
+        </Callbacks>
+
+        <FtGroups>
+
+            <FtGroup
+                ftGroupId      = "0"
+                ftGroupName    = "FtGroup0"
+            >
+
+                <DsmConfig
+                     dsmSize         = "20971520"
+                     dsmBaseAddress  = "0x80000000"
+                     dsmMaxNumTables = "256"
+                     dsmType         = "STUB"
+                />
+
+                <!-- Note: MUST include itself. -->
+                <!-- Note: nodeName and processName are optional attributes. -->
+
+                <FtGroupMembers>
+
+                    <FtGroupMember
+                        nodeId      = "0"
+                        nodeName    = "Node0"
+                        processId   = "0"
+                        processName = "Node0Process0"
+                    />
+
+                </FtGroupMembers>
+
+
+                <!-- Note: MUST NOT include itself. -->
+                <!-- Note: Master FtGroupMembers are tried in order. -->
+
+                <MasterFtGroupMembers>
+
+                </MasterFtGroupMembers>
+
+                <Callbacks>
+
+                </Callbacks>
+
+            </FtGroup>
+            <FtGroup
+                ftGroupId      = "1"
+                ftGroupName    = "FtGroup1"
+            >
+                <DsmConfig
+                     dsmSize         = "20971520"
+                     dsmBaseAddress  = "0x90000000"
+                     dsmMaxNumTables = "256"
+                     dsmType         = "STUB"
+                />
+                <!-- Note: MUST include itself. -->
+                <!-- Note: nodeName and processName are optional attributes. -->
+                <FtGroupMembers>
+                    <FtGroupMember
+                        nodeId      = "0"
+                        nodeName    = "Node0"
+                        processId   = "0"
+                        processName = "Node0Process0"
+                    />
+                </FtGroupMembers>
+
+                <!-- Note: MUST NOT include itself. -->
+                <!-- Note: Master FtGroupMembers are tried in order. -->
+                <MasterFtGroupMembers>
+                </MasterFtGroupMembers>
+
+                <Callbacks>
+                </Callbacks>
+            </FtGroup>
+
+        </FtGroups>
+
+    </FaultTolerance>
+
+    <Feature
+        name        = "DSM  - STUB"
+        library     = "libDSM-STUB.so"
+        classRec    = "itsDSM_StubImplClass"
+    />
+
+    <!--Feature
+        name        = "DCCA"
+        library     = "libdccacore.so"
+        classRec    = "itsDCCA_Class"
+    /-->
+    <Feature
+        name        = "OAM Server Class"
+        library     = "libDiaOAMServer.so"
+        classRec    = "itsDIAOAMServer_Class"
+    />
+ 
+    <ToolkitTrace>
+        <Critical  output = ""/>
+        <Error     output = ""/>
+        <Warning   output = ""/>
+        <Debug     output = ""/>
+    </ToolkitTrace>
+        
+    <ApplicationTrace>
+        <Critical     output=""/>
+        <Error        output=""/>
+        <Warning      output=""/>
+        <Debug        output=""/>
+    </ApplicationTrace>
+
+
+
+    <!--///////////////////////////////////////////////////////////////-->
+
+    <WorkerPool stackSize = "0">
+
+        <Transport  type   = "TaskQueue"
+                    count  = "4"
+                    family = "">
+
+        </Transport>
+
+    </WorkerPool>
+
+    <BorderPool stackSize = "0">
+
+      <Transport  name    = "MML Console Dispatcher"
+                   type    = "ServerSocket"
+                   family  = "">
+                                                                                
+            <StreamData socketDomain    = "INET"
+                        serverHostName  = "127.0.0.1"
+			serverPort      = "{{ mml_port }}"
+            />
+                                                                                
+            <Callbacks
+                type        = "debug-console"
+            />
+                                                                                
+      </Transport> 
+      <!--Transport  name    = "DiaServerUDP"
+                   type    = "Datagram">
+            <DatagramData   localHostName   = "127.0.0.1"
+                            localPort       = "6688">
+            </DatagramData>
+            <Callbacks
+                library         = "libDiaServer.so"
+                type            = "blocking"
+                preInitialize   = ""
+                postInitialize  = "IDS_UdpPostInit"
+                postNextEvent   = "IDS_PostNextUdpEvent"
+                nextEventFailed = "IDS_NextEventFailed"
+                preTerminate    = ""
+                postTerminate   = ""
+                onAccept        = "IDS_OnAccept"
+            />
+      </Transport-->
+
+       <Transport  name   = "DiaOAMServer"
+                    type    = "ServerSocket">
+
+            <StreamData socketDomain    = "INET"
+                        serverHostName  = "127.0.0.1"
+                        serverPort      = "6666"
+            />
+
+            <Callbacks
+                library         = "libDiaOAMServer.so"
+                type            = "blocking"
+                preInitialize   = "OAMServerPreInit"
+                postInitialize  = "OAMServerPostInit"
+                preNextEvent    = "null"
+                nextEventFailed = "null"
+                postNextEvent   = "OAMServerPostNext"
+                userDispatch    = "null"
+            />
+
+        </Transport> 
+
+    <!--Transport  name   = "DMServer"
+                type    = "IterativeServerSocket"
+                count   = "2" 
+                family  = "0">
+                        
+            <StreamData socketDomain    = "INET"
+                        serverHostName  = "172.16.3.50"
+                        serverPort      = "8686"
+            />  
+                
+            <Callbacks
+                library         = ""
+                type            = "blocking"
+                preInitialize   = "DmsPreInit"
+                postInitialize  = "DmsPostInit"
+                preNextEvent    = "null"
+                nextEventFailed = "DmsNextEventFailed"
+                postNextEvent   = "DmsPostNext"
+                userDispatch    = "null"
+                preTerminate    = "null"
+                postTerminate   = "DmsPostTerm"
+            />
+
+        </Transport-->
+
+    </BorderPool>
+
+</Application>
+
