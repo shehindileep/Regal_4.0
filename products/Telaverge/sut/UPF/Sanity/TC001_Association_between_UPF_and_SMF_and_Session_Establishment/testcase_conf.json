@@ -1,0 +1,240 @@
+{
+	"TestRunDuration": 200,
+	"SMF": {
+		"SMFConfig": {
+			"SmfInterfaceName": {
+				"Type": "interface_name",
+				"Node": "SMF",
+				"Subnet": "external_traffic"
+			},
+            "SmfInterfaceIp": {
+				"Type": "ip",
+				"Node": "SMF",
+				"Subnet": "external_traffic"
+			},
+			"N3Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.10.56"
+			},
+			"N4Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.70.56"
+			},
+            "UeIpv4": {
+				"Type": "constant",
+				"Value": "192.168.130.55"
+			},
+			"TemplateScriptPath": {
+				"Type": "constant",
+				"Value": "product/Telaverge/config/sut/UPF/pfcp_session_1.py"
+			},
+			"gNodeBInterfaceIp": {
+				"Type": "ip",
+				"Node": "gNodeB",
+				"Subnet": "external_traffic"
+			},
+			"DnInterfaceIp": {
+				"Type": "ip",
+				"Node": "DN",
+				"Subnet": "external_traffic"
+			}
+		},
+		"StatsInfo": {
+			"Stats": {
+				"Type": "constant",
+				"Value": ["systemstats"]
+			}
+		}  
+	},
+	"DN": {
+		"StatsInfo": {
+			"Stats": {
+				"Type": "constant",
+				"Value": ["systemstats"]
+			}
+		}    
+	},
+    "gNodeB": {
+		"StatsInfo": {
+			"Stats": {
+				"Type": "constant",
+				"Value": ["systemstats"]
+			}
+		}   
+	},
+	"UPF":{
+		"LBUIniConfig": {
+			"N3Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.10.56/24"
+			},
+			"N4Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.70.56/24"
+			},
+			"N6Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.130.56/24"
+			},
+			"N9Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.100.56/24"
+			},
+			"IPv4Gateway": {
+				"Type": "constant",
+				"Value": "192.168.110.1"
+			}
+	    },
+		"SMUIniConfig": {
+			"N3Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.10.56"
+			},
+			"N4Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.70.56"
+			},
+			"N6Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.130.56"
+			},
+			"N9Ipv4": {
+				"Type": "constant",
+				"Value": "192.168.100.56"
+			},
+			"SmuInterfaceName": {
+				"Type": "interface_names",
+				"Node": "UPF",
+				"Subnet": "internal_traffic"
+			}
+	    },
+		"StatsInfo": {
+			"Stats": {
+				"Type": "constant",
+				"Value": ["systemstats"]
+			}
+		}  
+    },
+	"statsResult": [
+			{
+				"graphAttrib": [
+					{
+						"collection": "SystemStatResult",
+						"filter": {
+							"nodeName": "UPF"
+						},
+						"xAxisKey": "Timestamp",
+						"xAxisLabel": "Timestamp",
+						"yAxisKey": "cpuUsed",
+						"yAxisLabel": "CPU(%)",
+						"yAxisUnit": "%",
+						"yAxisPosition": "left"
+					},
+					{
+						"collection": "SystemStatResult",
+						"filter": {
+							"nodeName": "UPF"
+						},
+						"xAxisKey": "timeStamp",
+						"xAxisLabel": "Timestamp",
+						"yAxisKey": "memUsed",
+						"yAxisLabel": "RAM(KB)",
+						"yAxisUnit": "KB",
+						"yAxisPosition": "right"
+					}
+					],
+					"graphType": "Line",
+					"name": "UPF - System KPIs"
+			},
+			{
+				"graphAttrib": [
+					{
+						"collection": "SystemStatResult",
+						"filter": {
+							"nodeName": "SMF"
+						},
+						"xAxisKey": "Timestamp",
+						"xAxisLabel": "Timestamp",
+						"yAxisKey": "cpuUsed",
+						"yAxisLabel": "CPU(%)",
+						"yAxisUnit": "%",
+						"yAxisPosition": "left"
+					},
+					{
+						"collection": "SystemStatResult",
+						"filter": {
+							"nodeName": "SMF"
+						},
+						"xAxisKey": "timeStamp",
+						"xAxisLabel": "Timestamp",
+						"yAxisKey": "memUsed",
+						"yAxisLabel": "RAM(KB)",
+						"yAxisUnit": "KB",
+						"yAxisPosition": "right"
+					}
+					],
+					"graphType": "Line",
+					"name": "SMF - System KPIs"
+			},
+			{	
+				"graphAttrib": [
+				{
+					"collection": "SystemStatResult",
+					"filter": {
+						"nodeName": "DN"
+					},
+					"xAxisKey": "Timestamp",
+					"xAxisLabel": "Timestamp",
+					"yAxisKey": "cpuUsed",
+					"yAxisLabel": "CPU(%)",
+					"yAxisUnit": "%",
+					"yAxisPosition": "left"
+				},
+				{
+					"collection": "SystemStatResult",
+					"filter": {
+						"nodeName": "DN"
+					},
+					"xAxisKey": "timeStamp",
+					"xAxisLabel": "Timestamp",
+					"yAxisKey": "memUsed",
+					"yAxisLabel": "RAM(KB)",
+					"yAxisUnit": "KB",
+					"yAxisPosition": "right"
+				}
+				],
+				"graphType": "Line",
+				"name": "DN - System KPIs"
+			},
+			{
+				"graphAttrib": [
+				{
+					"collection": "SystemStatResult",
+					"filter": {
+						"nodeName": "gNodeB"
+					},
+					"xAxisKey": "Timestamp",
+					"xAxisLabel": "Timestamp",
+					"yAxisKey": "cpuUsed",
+					"yAxisLabel": "CPU(%)",
+					"yAxisUnit": "%",
+					"yAxisPosition": "left"
+				},
+				{
+					"collection": "SystemStatResult",
+					"filter": {
+						"nodeName": "gNodeB"
+					},
+					"xAxisKey": "timeStamp",
+					"xAxisLabel": "Timestamp",
+					"yAxisKey": "memUsed",
+					"yAxisLabel": "RAM(KB)",
+					"yAxisUnit": "KB",
+					"yAxisPosition": "right"
+				}
+				],
+				"graphType": "Line",
+				"name": "gNodeB - System KPIs"
+			}
+		]
+}

@@ -1,0 +1,28 @@
+---
+# tasks file for install-unicorn
+   - name: Install the 'Development tools' package group
+     yum:
+       name: "@Development tools"
+       state: present
+  
+   - name: install compilation depencency
+     shell: bash /root/upf/install/script/install-dep.sh
+
+   - name: Install ninja build
+     #shell: yum --nogpgcheck install ninja-build
+     yum:
+       name: ninja-build 
+       state: present
+  
+   - name: Install meson 
+     #shell: yum --nogpgcheck install meson
+     yum:
+       name: meson
+       state: present
+
+   - name: install docker 
+     #shell: yum install docker
+     yum:
+       name: docker
+       state: present
+       
